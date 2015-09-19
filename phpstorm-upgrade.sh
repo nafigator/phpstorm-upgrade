@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+#
+# phpstorm-upgrade.sh
+#
+# Copyright © 2015 Yancharuk Alexander <alex at itvault dot info>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the BSD 3-Clause License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# BSD 3-Clause License for more details.
+#
+# You should have received a copy of the BSD 3-Clause License along with this
+# program.  If not, see <http://opensource.org/licenses/BSD-3-Clause>.
 
 DOWNLOAD_PAGE_URL='https://www.jetbrains.com/phpstorm/download/download_thanks.jsp?os=linux'
 DOWNLOAD_LINK_REGEX='<a href=\"([^"]+)">HTTP</a>'
