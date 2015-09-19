@@ -25,7 +25,7 @@ if [ ! -x ${PHPSTORM_DIR} ]; then
 	fi
 fi
 
-DOWNLOAD_LINK=$(curl -s "$DOWNLOAD_PAGE_URL" | command egrep -o "$DOWNLOAD_LINK_REGEX" | command egrep -o "$DOWNLOAD_URL_REGEX")
+DOWNLOAD_LINK=$(command curl -s "$DOWNLOAD_PAGE_URL" | command egrep -o "$DOWNLOAD_LINK_REGEX" | command egrep -o "$DOWNLOAD_URL_REGEX")
 
 if [ ! -z ${DOWNLOAD_LINK} ]; then
 	echo "DOWNLOAD_LINK: $DOWNLOAD_LINK"
@@ -59,7 +59,7 @@ if [ -e "$TMP_DIR/$FILENAME" ]; then
 else
 	cd ${TMP_DIR}
 
-	curl ${CURL_DOWNLOAD_PARAMS} ${DOWNLOAD_LINK}
+	command curl ${CURL_DOWNLOAD_PARAMS} ${DOWNLOAD_LINK}
 
 	if [ $? -eq 0 ]; then
 		echo 'File successfully downloaded'
