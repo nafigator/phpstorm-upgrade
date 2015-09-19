@@ -117,45 +117,47 @@ fi
 ln -s "$PHPSTORM_DIR/$PHPSTORM_BUILD/bin/phpstorm.sh" "$BINARY_DIR/phpstorm"
 
 if [ $? -eq 0 ]; then
-	echo 'Link succesfully created'
+	echo 'New link succesfully created'
 else
 	echo "Error. Could not create the link: $BINARY_DIR/phpstorm"
 	return 1
 fi
 
+echo "Successfully installed new version: $PHPSTORM_VERSION"
+
 rm -f "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 
 if [ $? -eq 0 ]; then
-	[ -z ${DEBUG} ] && unset DOWNLOAD_PAGE_URL	\
-		DOWNLOAD_LINK_REGEX 	\
-		DOWNLOAD_URL_REGEX 		\
-		VERSION_REGEX			\
-		FILENAME_REGEX			\
-		CURL_DOWNLOAD_PARAMS	\
-		DOWNLOAD_TMP_DIR		\
-		PHPSTORM_DIR			\
-		BINARY_DIR				\
-		PHPSTORM_VERSION		\
-		PHPSTORM_FILENAME		\
-		DOWNLOAD_LINK			\
-		PHPSTORM_BUILD
+	[ -z ${DEBUG} ] &&				\
+		unset DOWNLOAD_PAGE_URL		\
+			DOWNLOAD_LINK_REGEX 	\
+			DOWNLOAD_URL_REGEX 		\
+			VERSION_REGEX			\
+			FILENAME_REGEX			\
+			CURL_DOWNLOAD_PARAMS	\
+			DOWNLOAD_TMP_DIR		\
+			PHPSTORM_DIR			\
+			BINARY_DIR				\
+			PHPSTORM_VERSION		\
+			PHPSTORM_FILENAME		\
+			DOWNLOAD_LINK			\
+			PHPSTORM_BUILD
 	echo 'Cleanup ... OK'
 else
-	[ -z ${DEBUG} ] && unset DOWNLOAD_PAGE_URL	\
-		DOWNLOAD_LINK_REGEX 	\
-		DOWNLOAD_URL_REGEX 		\
-		VERSION_REGEX			\
-		FILENAME_REGEX			\
-		CURL_DOWNLOAD_PARAMS	\
-		DOWNLOAD_TMP_DIR		\
-		PHPSTORM_DIR			\
-		BINARY_DIR				\
-		PHPSTORM_VERSION		\
-		PHPSTORM_FILENAME		\
-		DOWNLOAD_LINK			\
-		PHPSTORM_BUILD
 	echo "Error. Could not delete the file: $DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME";
+	[ -z ${DEBUG} ] && 			\
+		unset DOWNLOAD_PAGE_URL		\
+			DOWNLOAD_LINK_REGEX 	\
+			DOWNLOAD_URL_REGEX 		\
+			VERSION_REGEX			\
+			FILENAME_REGEX			\
+			CURL_DOWNLOAD_PARAMS	\
+			DOWNLOAD_TMP_DIR		\
+			PHPSTORM_DIR			\
+			BINARY_DIR				\
+			PHPSTORM_VERSION		\
+			PHPSTORM_FILENAME		\
+			DOWNLOAD_LINK			\
+			PHPSTORM_BUILD
 	return 1
 fi
-
-echo "Successfully installed new version: $PHPSTORM_VERSION"
