@@ -16,6 +16,23 @@ for i in $@; do
 	esac
 done
 
+check_dependencies() {
+	local commands='curl tar grep egrep'
+	local error=0
+	for i in ${commands}; do
+		command -v ${i} >/dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			[ ! -z ${DEBUG} ] && echo "Check $i ... OK"
+		else
+			echo "Error. $i command not available"
+			error=1
+		fi
+	done
+	return ${error}
+}
+
+check_dependencies || return 1;
+
 if [ ! -x ${DOWNLOAD_TMP_DIR} ]; then
 	echo 'TEMP DIR not found'; return 1
 fi
