@@ -177,7 +177,7 @@ if [ $? -eq 0 ]; then
 	echo 'Cleanup ... OK'
 else
 	echo "Error. Could not delete the file: $DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME";
-	[ -z ${DEBUG} ] && 			\
+	[ -z ${DEBUG} ] &&				\
 		unset DOWNLOAD_PAGE_URL		\
 			DOWNLOAD_LINK_REGEX 	\
 			DOWNLOAD_URL_REGEX 		\
