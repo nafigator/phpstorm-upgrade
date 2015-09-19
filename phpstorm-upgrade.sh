@@ -6,12 +6,17 @@ DOWNLOAD_URL_REGEX='http://download.jetbrains.com/webide/PhpStorm-[^"]+'
 VERSION_REGEX='\d+\.\d+\.\d+'
 FILENAME_REGEX='PhpStorm-\d+\.\d+\.\d+\.tar\.gz'
 CURL_DOWNLOAD_PARAMS='-LOs'
-TMP_DIR='/tmp'
+DOWNLOAD_TMP_DIR='/tmp'
 PHPSTORM_DIR="$HOME/.local/share/phpstorm"
 BINARY_DIR="$HOME/bin"
 
+for i in $@; do
+	case ${i} in
+		--debug|-d) DEBUG='true';;
+	esac
+done
 
-if [ ! -x ${TMP_DIR} ]; then
+if [ ! -x ${DOWNLOAD_TMP_DIR} ]; then
 	echo 'TEMP DIR not found'; return 1
 fi
 
@@ -33,31 +38,31 @@ else
 	echo 'Error. DOWNLOAD_LINK parsing failure'; return 1
 fi
 
-VERSION=$(echo ${DOWNLOAD_LINK} | command grep -Po ${VERSION_REGEX})
+PHPSTORM_VERSION=$(echo ${DOWNLOAD_LINK} | command grep -Po ${VERSION_REGEX})
 
-if [ ! -z ${VERSION} ]; then
-	echo "Latest version: $VERSION"
+if [ ! -z ${PHPSTORM_VERSION} ]; then
+	echo "Latest version: $PHPSTORM_VERSION"
 else
 	echo 'Error. Version parsing failure'; return 1
 fi
 
-FILENAME=$(echo ${DOWNLOAD_LINK} | command grep -Po ${FILENAME_REGEX})
+PHPSTORM_FILENAME=$(echo ${DOWNLOAD_LINK} | command grep -Po ${FILENAME_REGEX})
 
-if [ ! -z ${FILENAME} ]; then
-	echo "File name: $FILENAME"
+if [ ! -z ${PHPSTORM_FILENAME} ]; then
+	echo "File name: $PHPSTORM_FILENAME"
 else
-	echo 'Error. FILENAME parsing failure'; return 1
+	echo 'Error. PHPSTORM_FILENAME parsing failure'; return 1
 fi
 
 # Check previous version
-#if [ -d "$PHPSTORM_DIR/$FILENAME" ]; then
+#if [ -d "$PHPSTORM_DIR/$PHPSTORM_FILENAME" ]; then
 #	echo 'Installed latest version. Exit'; exit 0
 #fi
 
-if [ -e "$TMP_DIR/$FILENAME" ]; then
-	echo "Found downloaded file in $TMP_DIR"
+if [ -e "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME" ]; then
+	echo "Found downloaded file in $DOWNLOAD_TMP_DIR"
 else
-	cd ${TMP_DIR}
+	cd ${DOWNLOAD_TMP_DIR}
 
 	command curl ${CURL_DOWNLOAD_PARAMS} ${DOWNLOAD_LINK}
 
@@ -68,13 +73,13 @@ else
 	fi
 fi
 
-var=$(tar -tf ${FILENAME} | grep '/bin/phpstorm.sh')
+var=$(tar -tf ${PHPSTORM_FILENAME} | grep '/bin/phpstorm.sh')
 
 if [ -z ${var} ]; then
 	echo 'Error. Not found executable in archive'; return 1
 fi
 
-var=$(tar -tf ${FILENAME} | head -n 1);
+var=$(tar -tf ${PHPSTORM_FILENAME} | head -n 1);
 dir=$(dirname ${var});
 PHPSTORM_BUILD=${dir%/*}
 unset var dir
@@ -91,7 +96,7 @@ if [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
 fi
 
 cd ${PHPSTORM_DIR}
-tar xf "$TMP_DIR/$FILENAME"
+tar xf "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 
 if [ $? -eq 0 ] && [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
 	echo 'Archive succesfully unpacked'
@@ -118,12 +123,39 @@ else
 	return 1
 fi
 
-rm -f "$TMP_DIR/$FILENAME"
+rm -f "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 
 if [ $? -eq 0 ]; then
+	[ -z ${DEBUG} ] && unset DOWNLOAD_PAGE_URL	\
+		DOWNLOAD_LINK_REGEX 	\
+		DOWNLOAD_URL_REGEX 		\
+		VERSION_REGEX			\
+		FILENAME_REGEX			\
+		CURL_DOWNLOAD_PARAMS	\
+		DOWNLOAD_TMP_DIR		\
+		PHPSTORM_DIR			\
+		BINARY_DIR				\
+		PHPSTORM_VERSION		\
+		PHPSTORM_FILENAME		\
+		DOWNLOAD_LINK			\
+		PHPSTORM_BUILD
 	echo 'Cleanup ... OK'
 else
-	echo "Error. Could not delete the file: $TMP_DIR/$FILENAME"; return 1
+	[ -z ${DEBUG} ] && unset DOWNLOAD_PAGE_URL	\
+		DOWNLOAD_LINK_REGEX 	\
+		DOWNLOAD_URL_REGEX 		\
+		VERSION_REGEX			\
+		FILENAME_REGEX			\
+		CURL_DOWNLOAD_PARAMS	\
+		DOWNLOAD_TMP_DIR		\
+		PHPSTORM_DIR			\
+		BINARY_DIR				\
+		PHPSTORM_VERSION		\
+		PHPSTORM_FILENAME		\
+		DOWNLOAD_LINK			\
+		PHPSTORM_BUILD
+	echo "Error. Could not delete the file: $DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME";
+	return 1
 fi
 
-echo "Successfully installed new version: $VERSION"
+echo "Successfully installed new version: $PHPSTORM_VERSION"
