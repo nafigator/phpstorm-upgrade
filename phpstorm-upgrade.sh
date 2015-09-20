@@ -16,6 +16,8 @@
 # program.
 # If not, see <https://tldrlegal.com/license/bsd-3-clause-license-(revised)>.
 
+
+OPTIONS=$@
 DOWNLOAD_PAGE_URL='https://www.jetbrains.com/phpstorm/download/download_thanks.jsp?os=linux'
 DOWNLOAD_LINK_REGEX='<a href=\"([^"]+)">HTTP</a>'
 DOWNLOAD_URL_REGEX='http://download.jetbrains.com/webide/PhpStorm-[^"]+'
@@ -47,10 +49,39 @@ check_dependencies() {
 	return ${error}
 }
 
-check_dependencies || return 1;
+_help() {
+	cat <<EOL
+Usage: $0 [OPTION...]
+
+Options:
+  -h, --help                 Show this help message
+  -d, --debug                Run program in debug mode
+
+EOL
+	exit 1;
+}
+while getopts 'hd-:' param; do
+	case ${param} in
+		h )  _help;;
+		d )  DEBUG=1;;
+		- )  VALUE="${OPTARG#*=}"
+			case $OPTARG in
+				debug )	DEBUG=1;;
+				help  ) _help;;
+				''    ) break;;
+				*     ) echo "Error. Illegal option --$OPTARG"; exit 2;;
+			esac ;;
+		* ) echo "Error. Illegal option $OPTARG"; exit 2;;
+	esac
+done
+shift $((OPTIND-1))
+
+exit 0
+
+check_dependencies	|| exit 1;
 
 if [ ! -x ${DOWNLOAD_TMP_DIR} ]; then
-	echo 'TEMP DIR not found'; return 1
+	echo 'TEMP DIR not found'; exit 1
 fi
 
 if [ ! -x ${PHPSTORM_DIR} ]; then
@@ -59,7 +90,7 @@ if [ ! -x ${PHPSTORM_DIR} ]; then
 	if [ $? -eq 0 ] && [ -x ${PHPSTORM_DIR} ]; then
 		echo 'Success';
 	else
-		echo 'Error. PHPSTORM_DIR creation failure'; return 1
+		echo 'Error. PHPSTORM_DIR creation failure'; exit 1
 	fi
 fi
 
@@ -68,7 +99,7 @@ DOWNLOAD_LINK=$(command curl -s "$DOWNLOAD_PAGE_URL" | command egrep -o "$DOWNLO
 if [ ! -z ${DOWNLOAD_LINK} ]; then
 	echo "DOWNLOAD_LINK: $DOWNLOAD_LINK"
 else
-	echo 'Error. DOWNLOAD_LINK parsing failure'; return 1
+	echo 'Error. DOWNLOAD_LINK parsing failure'; exit 1
 fi
 
 PHPSTORM_VERSION=$(echo ${DOWNLOAD_LINK} | command grep -Po ${VERSION_REGEX})
@@ -76,7 +107,7 @@ PHPSTORM_VERSION=$(echo ${DOWNLOAD_LINK} | command grep -Po ${VERSION_REGEX})
 if [ ! -z ${PHPSTORM_VERSION} ]; then
 	echo "Latest version: $PHPSTORM_VERSION"
 else
-	echo 'Error. Version parsing failure'; return 1
+	echo 'Error. Version parsing failure'; exit 1
 fi
 
 PHPSTORM_FILENAME=$(echo ${DOWNLOAD_LINK} | command grep -Po ${FILENAME_REGEX})
@@ -84,13 +115,8 @@ PHPSTORM_FILENAME=$(echo ${DOWNLOAD_LINK} | command grep -Po ${FILENAME_REGEX})
 if [ ! -z ${PHPSTORM_FILENAME} ]; then
 	echo "File name: $PHPSTORM_FILENAME"
 else
-	echo 'Error. PHPSTORM_FILENAME parsing failure'; return 1
+	echo 'Error. PHPSTORM_FILENAME parsing failure'; exit 1
 fi
-
-# Check previous version
-#if [ -d "$PHPSTORM_DIR/$PHPSTORM_FILENAME" ]; then
-#	echo 'Installed latest version. Exit'; exit 0
-#fi
 
 if [ -e "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME" ]; then
 	echo "Found downloaded file in $DOWNLOAD_TMP_DIR"
@@ -102,14 +128,14 @@ else
 	if [ $? -eq 0 ]; then
 		echo 'File successfully downloaded'
 	else
-		echo 'File download failure'; return 1
+		echo 'File download failure'; exit 1
 	fi
 fi
 
 var=$(tar -tf ${PHPSTORM_FILENAME} | grep '/bin/phpstorm.sh')
 
 if [ -z ${var} ]; then
-	echo 'Error. Not found executable in archive'; return 1
+	echo 'Error. Not found executable in archive'; exit 1
 fi
 
 var=$(tar -tf ${PHPSTORM_FILENAME} | head -n 1);
@@ -120,12 +146,12 @@ unset var dir
 if [ ! -z ${PHPSTORM_BUILD} ]; then
 	echo "Found build: $PHPSTORM_BUILD"
 else
-	echo 'Error. Not found bulild in archive'; return 1
+	echo 'Error. Not found bulild in archive'; exit 1
 fi
 
 # Check previous version
 if [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
-	echo 'Installed latest version. Exit'; return 0
+	echo 'Installed latest version. Exit'; exit 0
 fi
 
 cd ${PHPSTORM_DIR}
@@ -137,7 +163,7 @@ for dir in *.bkp; do
 	if [ $? -eq 0 ]; then
 		[ ! -z ${DEBUG} ] && echo 'Removed'
 	else
-		echo "Error. Could not delete the dir: $dir"; return 1
+		echo "Error. Could not delete the dir: $dir"; exit 1
 	fi
 done
 
@@ -148,7 +174,7 @@ for dir in *[!.bkp]; do
 	if [ $? -eq 0 ]; then
 		[ ! -z ${DEBUG} ] && echo 'Done'
 	else
-		echo "Error. Could not backup the dir: $dir"; return 1
+		echo "Error. Could not backup the dir: $dir"; exit 1
 	fi
 done
 
@@ -157,7 +183,7 @@ tar xf "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 if [ $? -eq 0 ] && [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
 	echo 'Archive succesfully unpacked'
 else
-	echo 'Unpack failure'; return 1
+	echo 'Unpack failure'; exit 1
 fi
 
 if [ -h "$BINARY_DIR/phpstorm" ] || [ -e "$BINARY_DIR/phpstorm" ]; then
@@ -166,7 +192,7 @@ if [ -h "$BINARY_DIR/phpstorm" ] || [ -e "$BINARY_DIR/phpstorm" ]; then
 		echo 'Found old link. Removed'
 	else
 		echo "Error. Could not delete the file: $BINARY_DIR/phpstorm"
-		return 1
+		exit 1
 	fi
 fi
 
@@ -176,7 +202,7 @@ if [ $? -eq 0 ]; then
 	echo 'New link succesfully created'
 else
 	echo "Error. Could not create the link: $BINARY_DIR/phpstorm"
-	return 1
+	exit 1
 fi
 
 echo "Successfully installed new version: $PHPSTORM_VERSION"
@@ -197,7 +223,8 @@ if [ $? -eq 0 ]; then
 			PHPSTORM_VERSION		\
 			PHPSTORM_FILENAME		\
 			DOWNLOAD_LINK			\
-			PHPSTORM_BUILD
+			PHPSTORM_BUILD			\
+			OPTIONS
 	echo 'Cleanup ... OK'
 else
 	echo "Error. Could not delete the file: $DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME";
@@ -214,6 +241,7 @@ else
 			PHPSTORM_VERSION		\
 			PHPSTORM_FILENAME		\
 			DOWNLOAD_LINK			\
-			PHPSTORM_BUILD
-	return 1
+			PHPSTORM_BUILD			\
+			OPTIONS
+	exit 1
 fi
