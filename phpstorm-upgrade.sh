@@ -129,6 +129,29 @@ if [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
 fi
 
 cd ${PHPSTORM_DIR}
+
+# Remove previous backups
+for dir in *.bkp; do
+	[ ! -z ${DEBUG} ] && echo "Found old backup: $dir"
+	rm -rf ${dir}
+	if [ $? -eq 0 ]; then
+		[ ! -z ${DEBUG} ] && echo 'Removed'
+	else
+		echo "Error. Could not delete the dir: $dir"; return 1
+	fi
+done
+
+# Backup previous versions
+for dir in *[!.bkp]; do
+	[ ! -z ${DEBUG} ] && echo "Backup old installation: $dir"
+	mv ${dir} ${dir}.bkp
+	if [ $? -eq 0 ]; then
+		[ ! -z ${DEBUG} ] && echo 'Done'
+	else
+		echo "Error. Could not backup the dir: $dir"; return 1
+	fi
+done
+
 tar xf "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 
 if [ $? -eq 0 ] && [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
