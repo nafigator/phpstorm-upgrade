@@ -22,7 +22,7 @@ if you want such install sheme:
 /usr/local/
           /bin/phpstorm                   # link
           ...
-          /share/phpstorm/PhpStorm-n.n.n/ # program
+          /share/phpstorm/PhpStorm-n.n.n/ # program dir
 ```
 Modify variables to:
 ```bash
