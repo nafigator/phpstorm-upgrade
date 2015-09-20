@@ -13,7 +13,8 @@
 # BSD 3-Clause License for more details.
 #
 # You should have received a copy of the BSD 3-Clause License along with this
-# program.  If not, see <http://opensource.org/licenses/BSD-3-Clause>.
+# program.
+# If not, see <https://tldrlegal.com/license/bsd-3-clause-license-(revised)>.
 
 DOWNLOAD_PAGE_URL='https://www.jetbrains.com/phpstorm/download/download_thanks.jsp?os=linux'
 DOWNLOAD_LINK_REGEX='<a href=\"([^"]+)">HTTP</a>'
