@@ -16,7 +16,19 @@ under other *n[iu]x OS or if you have idea how to improve script.
 By default script downloads and unpack PhpStorm archive to
 _**~/.local/share/phpstorm/PhpStorm-n.n.n**_ direcrory. Then creates
 launcher-link _**~/bin/phpstorm**_. If you want to install PhpStorm in other
-place, modify **PHPSTORM_DIR** and **BINARY_DIR** variables.
+place, modify **PHPSTORM_DIR** and **BINARY_DIR** variables. For example
+if you want such install sheme:
+```bash
+/usr/local/
+          /bin/phpstorm                   # link
+          ...
+          /share/phpstorm/PhpStorm-n.n.n/ # program
+```
+Modify variables to:
+```bash
+PHPSTORM_DIR='/usr/local/share/phpstorm'
+BINARY_DIR='/usr/local/bin'
+```
 
   [License img]: https://img.shields.io/badge/license-BSD3-brightgreen.svg
   [License src]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)
