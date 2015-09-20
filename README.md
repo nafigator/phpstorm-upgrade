@@ -1,7 +1,7 @@
 [![GitHub license][License img]][License src]
 
 # phpstorm-upgrade
-Bash script for [PhpStorm®] upgrade
+Bash script for [PhpStorm®] upgrade.
 
 ### Requirements
 * bash
