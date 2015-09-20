@@ -26,8 +26,8 @@ if you want such install sheme:
 ```
 Modify variables to:
 ```bash
-PHPSTORM_DIR='/usr/local/share/phpstorm'
 BINARY_DIR='/usr/local/bin'
+PHPSTORM_DIR='/usr/local/share/phpstorm'
 ```
 
   [License img]: https://img.shields.io/badge/license-BSD3-brightgreen.svg

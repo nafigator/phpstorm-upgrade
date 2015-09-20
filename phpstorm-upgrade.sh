@@ -23,8 +23,8 @@ VERSION_REGEX='\d+\.\d+\.\d+'
 FILENAME_REGEX='PhpStorm-\d+\.\d+\.\d+\.tar\.gz'
 CURL_DOWNLOAD_PARAMS='-LOs'
 DOWNLOAD_TMP_DIR='/tmp'
-PHPSTORM_DIR="$HOME/.local/share/phpstorm"
 BINARY_DIR="$HOME/bin"
+PHPSTORM_DIR="$HOME/.local/share/phpstorm"
 
 for i in $@; do
 	case ${i} in
