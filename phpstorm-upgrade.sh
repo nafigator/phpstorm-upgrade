@@ -23,7 +23,7 @@ DOWNLOAD_LINK_REGEX='<a href=\"([^"]+)">HTTP</a>'
 DOWNLOAD_URL_REGEX='http://download.jetbrains.com/webide/PhpStorm-[^"]+'
 VERSION_REGEX='\d+\.\d+(\.\d+)?'
 FILENAME_REGEX='PhpStorm-\d+\.\d+(\.\d+)?\.tar\.gz'
-CURL_DOWNLOAD_PARAMS='-LOs'
+CURL_DOWNLOAD_PARAMS='-LO --progress-bar'
 DOWNLOAD_TMP_DIR='/tmp'
 BINARY_DIR="$HOME/bin"
 PHPSTORM_DIR="$HOME/.local/share/phpstorm"
@@ -121,6 +121,7 @@ if [ -e "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME" ]; then
 else
 	cd ${DOWNLOAD_TMP_DIR}
 
+	echo "Downloading the archive from server:"
 	command curl ${CURL_DOWNLOAD_PARAMS} ${DOWNLOAD_LINK}
 
 	if [ $? -eq 0 ]; then
