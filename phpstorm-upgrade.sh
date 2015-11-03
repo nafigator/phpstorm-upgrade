@@ -21,8 +21,8 @@ OPTIONS=$@
 DOWNLOAD_PAGE_URL='https://www.jetbrains.com/phpstorm/download/download_thanks.jsp?os=linux'
 DOWNLOAD_LINK_REGEX='<a href=\"([^"]+)">HTTP</a>'
 DOWNLOAD_URL_REGEX='http://download.jetbrains.com/webide/PhpStorm-[^"]+'
-VERSION_REGEX='\d+\.\d+\.\d+'
-FILENAME_REGEX='PhpStorm-\d+\.\d+\.\d+\.tar\.gz'
+VERSION_REGEX='\d+\.\d+(\.\d+)?'
+FILENAME_REGEX='PhpStorm-\d+\.\d+(\.\d+)?\.tar\.gz'
 CURL_DOWNLOAD_PARAMS='-LOs'
 DOWNLOAD_TMP_DIR='/tmp'
 BINARY_DIR="$HOME/bin"
@@ -75,8 +75,6 @@ while getopts 'hd-:' param; do
 	esac
 done
 shift $((OPTIND-1))
-
-exit 0
 
 check_dependencies	|| exit 1;
 
