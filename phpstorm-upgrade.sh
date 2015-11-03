@@ -144,7 +144,7 @@ unset var dir
 if [ ! -z ${PHPSTORM_BUILD} ]; then
 	echo "Found build: $PHPSTORM_BUILD"
 else
-	echo 'Error. Not found bulild in archive'; exit 1
+	echo 'Error. Not found build in archive'; exit 1
 fi
 
 # Check previous version
@@ -179,7 +179,7 @@ done
 tar xf "$DOWNLOAD_TMP_DIR/$PHPSTORM_FILENAME"
 
 if [ $? -eq 0 ] && [ -d "$PHPSTORM_DIR/$PHPSTORM_BUILD" ]; then
-	echo 'Archive succesfully unpacked'
+	echo 'Archive successfully unpacked'
 else
 	echo 'Unpack failure'; exit 1
 fi
@@ -197,7 +197,7 @@ fi
 ln -s "$PHPSTORM_DIR/$PHPSTORM_BUILD/bin/phpstorm.sh" "$BINARY_DIR/phpstorm"
 
 if [ $? -eq 0 ]; then
-	echo 'New link succesfully created'
+	echo 'New link successfully created'
 else
 	echo "Error. Could not create the link: $BINARY_DIR/phpstorm"
 	exit 1
