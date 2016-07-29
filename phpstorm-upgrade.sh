@@ -27,56 +27,12 @@ CURL_DOWNLOAD_PARAMS='-LO --progress-bar'
 DOWNLOAD_TMP_DIR='/tmp'
 BINARY_DIR="$HOME/bin"
 PHPSTORM_DIR="$HOME/.local/share/phpstorm"
+VERSION='0.0.3'
 
-for i in $@; do
-	case ${i} in
-		--debug|-d) DEBUG='true';;
-	esac
-done
+. ./functions.sh
 
-check_dependencies() {
-	local commands='curl tar grep egrep'
-	local error=0
-	for i in ${commands}; do
-		command -v ${i} >/dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			[ ! -z ${DEBUG} ] && echo "Check $i ... OK"
-		else
-			echo "Error. $i command not available"
-			error=1
-		fi
-	done
-	return ${error}
-}
-
-_help() {
-	cat <<EOL
-Usage: $0 [OPTION...]
-
-Options:
-  -h, --help                 Show this help message
-  -d, --debug                Run program in debug mode
-
-EOL
-	exit 1;
-}
-while getopts 'hd-:' param; do
-	case ${param} in
-		h )  _help;;
-		d )  DEBUG=1;;
-		- )  VALUE="${OPTARG#*=}"
-			case $OPTARG in
-				debug )	DEBUG=1;;
-				help  ) _help;;
-				''    ) break;;
-				*     ) echo "Error. Illegal option --$OPTARG"; exit 2;;
-			esac ;;
-		* ) echo "Error. Illegal option $OPTARG"; exit 2;;
-	esac
-done
-shift $((OPTIND-1))
-
-check_dependencies	|| exit 1;
+parse_options "$@" || exit $?
+check_dependencies  || exit $?
 
 if [ ! -x ${DOWNLOAD_TMP_DIR} ]; then
 	echo 'TEMP DIR not found'; exit 1
