@@ -75,17 +75,15 @@ parse_options() {
 
 	while getopts :vhd-: param; do
 		case ${param} in
-			v ) debug "Found option -$param"; print_version;;
-			h ) debug "Found option -$param"; usage_help;;
+			v ) debug "Found option -$param"; print_version; exit 0;;
+			h ) debug "Found option -$param"; usage_help; exit 0;;
 			d ) DEBUG=1; debug "Found option -$param";;
 			- ) local value="${OPTARG#*=}"
-				debug "Found long $value"
 				case $OPTARG in
-					version ) debug "Found option --$OPTARG"; print_version; result=1;;
-					help ) debug "Found option --$OPTARG"; usage_help; result=1;;
-					debug ) DEBUG=1; debug "Found option --$OPTARG";;
-					'' ) warn "Found -- option"; result=2;;
-					* ) debug "Found option --$OPTARG"; warn "Illegal option --$OPTARG"; result=2;;
+					version ) debug "Found option --$OPTARG"; print_version; exit 0;;
+					help    ) debug "Found option --$OPTARG"; usage_help; exit 0;;
+					debug   ) DEBUG=1; debug "Found option --$OPTARG";;
+					*       ) debug "Found option --$OPTARG"; warn "Illegal option --$OPTARG"; result=2;;
 				esac;;
 			* ) debug "Found option -$param"; warn "Illegal option -$param"; result=2;;
 		esac
