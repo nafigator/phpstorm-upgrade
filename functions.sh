@@ -78,14 +78,13 @@ parse_options() {
 			v ) debug "Found option -$param"; print_version; exit 0;;
 			h ) debug "Found option -$param"; usage_help; exit 0;;
 			d ) DEBUG=1; debug "Found option -$param";;
-			- ) local value="${OPTARG#*=}"
-				case $OPTARG in
+			- ) case $OPTARG in
 					version ) debug "Found option --$OPTARG"; print_version; exit 0;;
 					help    ) debug "Found option --$OPTARG"; usage_help; exit 0;;
 					debug   ) DEBUG=1; debug "Found option --$OPTARG";;
 					*       ) debug "Found option --$OPTARG"; warn "Illegal option --$OPTARG"; result=2;;
 				esac;;
-			* ) debug "Found option -$param"; warn "Illegal option -$param"; result=2;;
+			* ) debug "Found option -$OPTARG"; warn "Illegal option -$OPTARG"; result=2;;
 		esac
 	done
 	shift $((OPTIND-1))
