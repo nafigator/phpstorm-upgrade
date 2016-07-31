@@ -29,7 +29,7 @@ readonly VERSION='0.0.4'
 
 . ./functions.sh
 
-parse_options "$@" || exit $?;
+parse_options "$@" || exit $?
 check_dependencies  || exit $?
 
 if [ ! -x ${DOWNLOAD_TMP_DIR} ]; then
