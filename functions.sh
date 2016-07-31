@@ -27,7 +27,7 @@ inform() {
 }
 
 # Function for warning messages
-warn() {
+warning() {
 	printf "[$(date --rfc-3339=seconds)]: \033[0;33mWARNING:\033[0m $@\n" >&2
 }
 
@@ -44,7 +44,7 @@ check_dependencies() {
 		if [ $? -eq 0 ]; then
 			debug "Check $i ... OK"
 		else
-			warn "$i command not available"
+			warning "$i command not available"
 			result=1
 		fi
 	done
@@ -74,17 +74,21 @@ parse_options() {
 	local result=0
 
 	while getopts :vhd-: param; do
+		[ ${param} == '?' ] && found=${OPTARG} || found=${param}
+
+		debug "Found option '$found'"
+
 		case ${param} in
-			v ) debug "Found option -$param"; print_version; exit 0;;
-			h ) debug "Found option -$param"; usage_help; exit 0;;
-			d ) DEBUG=1; debug "Found option -$param";;
+			v ) print_version; exit 0;;
+			h ) usage_help; exit 0;;
+			d ) DEBUG=1;;
 			- ) case $OPTARG in
-					version ) debug "Found option --$OPTARG"; print_version; exit 0;;
-					help    ) debug "Found option --$OPTARG"; usage_help; exit 0;;
-					debug   ) DEBUG=1; debug "Found option --$OPTARG";;
-					*       ) debug "Found option --$OPTARG"; warn "Illegal option --$OPTARG"; result=2;;
+					version ) print_version; exit 0;;
+					help    ) usage_help; exit 0;;
+					debug   ) DEBUG=1;;
+					*       ) warning "Illegal option --$OPTARG"; result=2;;
 				esac;;
-			* ) debug "Found option -$OPTARG"; warn "Illegal option -$OPTARG"; result=2;;
+			* ) warning "Illegal option -$OPTARG"; result=2;;
 		esac
 	done
 	shift $((OPTIND-1))
