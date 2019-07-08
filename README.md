@@ -2,6 +2,7 @@
 
 # phpstorm-upgrade
 Bash script for [PhpStorm®] upgrade.
+## DEPRECATED
 
 ### Requirements
 * bash
